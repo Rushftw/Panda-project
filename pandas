@@ -1,0 +1,52 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Create DataFrame "Exams"
+exams_info = {
+    'Date': ['2024-05-01', '2024-05-03', '2024-05-05', '2024-05-07', '2024-05-10', '2024-05-12', '2024-05-15', '2024-05-20'],
+    'Subject': ['Math', 'Science', 'English', 'History', 'Geography', 'Art', 'Music', 'Physical Education'],
+    'Mark': [85, 92, 78, 88, 90, 95, 83, 79]
+}
+exams_sheet = pd.DataFrame(exams_info)
+exams_sheet['Date'] = pd.to_datetime(exams_sheet['Date'])
+
+# Download dataset "Online Food" and open it as a DataFrame
+food_data = pd.read_csv(r'C:\Users\HP\Downloads\onlinefood.csv')
+
+# Drop "longitude" and "latitude" columns
+food_data.drop(['longitude', 'latitude'], axis=1, inplace=True)
+
+# Find customers with the minimal and maximum ages
+min_age_customer = food_data.loc[food_data['age'].idxmin()]
+max_age_customer = food_data.loc[food_data['age'].idxmax()]
+
+# Group by column "Occupation" and output the mean value of ages for each group
+occupation_mean_age = food_data.groupby('Occupation')['age'].mean()
+
+# Group by "Gender" and "Monthly Income" and output the mean value of family size for each group
+gender_income_mean_family_size = food_data.groupby(['Gender', 'MonthlyIncome'])['family_size'].mean()
+
+# Group by "Marital Status" and "Education Qualifications" and output the number of Positive feedbacks for each group
+marital_education_positive_feedbacks = food_data.groupby(['MaritalStatus', 'EducationQualifications'])['PositiveFeedbacks'].sum()
+
+# Add a new column "Large family" and fill out the value "True" for the rows with Family Size > 4 and "False" otherwise
+food_data['LargeFamily'] = food_data['family_size'] > 4
+
+# Plot a histogram of the mean value of ages, classify the data by the Education Qualifications
+food_data.groupby('EducationQualifications')['age'].mean().plot(kind='bar', xlabel='Education Qualifications', ylabel='Mean Age')
+plt.title('Mean Age by Education Qualifications')
+plt.show()
+
+# Plot a histogram of Positive and Negative feedbacks for Gender groups
+food_data.groupby('Gender')['PositiveFeedbacks', 'NegativeFeedbacks'].sum().plot(kind='bar', stacked=True)
+plt.title('Feedbacks by Gender')
+plt.xlabel('Gender')
+plt.ylabel('Count')
+plt.show()
+
+# Plot a line plot of the number of Positive feedbacks against Family size
+food_data.plot(kind='line', x='family_size', y='PositiveFeedbacks', marker='o')
+plt.title('Positive Feedbacks against Family Size')
+plt.xlabel('Family Size')
+plt.ylabel('Positive Feedbacks')
+plt.show()
